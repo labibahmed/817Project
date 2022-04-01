@@ -6,12 +6,18 @@
 package pkg817project;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import javax.crypto.Cipher;
 
 /**
  *
@@ -25,6 +31,8 @@ public class Supervisor {
     PrintWriter Cw, Pw;
     InputStreamReader Cr,Pr;
     BufferedReader Cb,Pb;
+    String ID = "Supervisor";
+    Cipher RSA;
     
     public Supervisor() throws Exception {
         s = new ServerSocket(4999); // server on port 4999
@@ -41,9 +49,38 @@ public class Supervisor {
         Pr = new InputStreamReader(purdept.getInputStream());
         Pb = new BufferedReader(Pr);
         
+        //Set up encryption variables
+        RSA = Cipher.getInstance("RSA");
+        KeyPairGenerator kg = KeyPairGenerator.getInstance("RSA");
+        KeyPair rsaKey = kg.generateKeyPair();
+        PUSupervisor = rsaKey.getPublic();
+        PRSupervisor = rsaKey.getPrivate();
+        
+    }
+    
+    public void readClient() throws IOException{
+        String msg = Cb.readLine();
+        System.out.println(msg);
+    }
+    
+    public void keyExchange() throws IOException, ClassNotFoundException{
+        // creating object streams to exchange keys with Client
+        ObjectInputStream objectInputStream = new ObjectInputStream(client.getInputStream());
+        PUClient = (PublicKey) objectInputStream.readObject();
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(client.getOutputStream());
+        objectOutputStream.writeObject(PUSupervisor);
+        
+        
+        // creating object streams to exchange keys with purdept
+        objectOutputStream = new ObjectOutputStream(purdept.getOutputStream());
+        objectOutputStream.writeObject(PUSupervisor);
+        objectInputStream = new ObjectInputStream(purdept.getInputStream());
+        PUSupervisor = (PublicKey) objectInputStream.readObject();
     }
     
     public static void main(String[] args) throws Exception {
         Supervisor s = new Supervisor();
+        s.keyExchange();
+        s.readClient();
     }
 }

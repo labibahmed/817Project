@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package pkg817project;
 
 import java.io.BufferedReader;
@@ -20,6 +16,7 @@ import java.security.Signature;
 import java.sql.Timestamp;
 import java.util.Base64;
 import java.util.Scanner;
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 
 /**
@@ -87,6 +84,8 @@ public class Client {
         return RSA.doFinal(msg);
     }
     
+    
+    
     public void keyExchange() throws IOException, ClassNotFoundException{
         // creating object streams to exchange keys with purdept
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(purdept.getOutputStream());
@@ -120,7 +119,10 @@ public class Client {
         String item = scan.nextLine();
     }
     
-    public static void main(String[] args) throws Exception {
+    
+   
+    
+    public static void main(String[] args) throws Exception, BadPaddingException {
         Client s = new Client();
         s.keyExchange();
         s.formOutput();

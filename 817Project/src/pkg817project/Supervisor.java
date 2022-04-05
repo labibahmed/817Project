@@ -92,7 +92,7 @@ public class Supervisor {
     
     public void readClient() throws IOException, Exception{
         msgFromClient = Cb.readLine();
-        System.out.println("Recieved from Client: " + msgFromClient);
+        System.out.println("Received from Client: " + msgFromClient);
         String[] enmsg_array;
         enmsg_array = msgFromClient.split("\\|\\|"); //split msg and client signature [0] [1]
         String clientMsg = enmsg_array[0];

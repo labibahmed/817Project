@@ -71,6 +71,9 @@ public class PurchaseDept {
         msgFromClient = Cb.readLine();
         msgFromSupervisor = Sb.readLine();
         
+        System.out.println("Recieved from Client: " + msgFromClient);
+        System.out.println("Recieved from Supervisor: " + msgFromSupervisor);
+        
         String[] enmsg_array;
         enmsg_array = msgFromClient.split("\\|\\|"); //split msg and client signature [0] [1]
         String clientMsg = enmsg_array[0]; //client message
@@ -85,7 +88,7 @@ public class PurchaseDept {
         byte[] enmsg = Base64.getDecoder().decode(clientMsg);             
         byte[] demsg = RSAdecrypt(enmsg,PRPurDept);
         deMsgClient = new String (demsg);
-        System.out.println(deMsgClient);   
+        System.out.println("The decrypted Client Order: "+deMsgClient);   
         
         byte[] enmsg2 = Base64.getDecoder().decode(superMsg);             
         byte[] demsg2 = RSAdecrypt(enmsg2,PRPurDept);
@@ -93,12 +96,13 @@ public class PurchaseDept {
         byte[] ph2 =RSAdecrypt(placeholder,PRPurDept);
         deMsgSuper = new String (demsg2);
         String[] deMsgArrSuper =deMsgSuper.split("\\|\\|");
-        System.out.println(deMsgSuper);  
-        System.out.println(new String(ph2));
+        System.out.println("The Supervisors stamp: "+ deMsgSuper);  
+        System.out.println("Confirmed Order from Supervisor: "+ new String(ph2));
         
         
         
        if(verifySigClient(deMsgClient,clientsig) && verifySigSuper(deMsgSuper,superSig) && verifyTime(Long.parseLong(deMsgArrSuper[1])) ){
+           System.out.println("Client's and Supervisor's signature match, valid timestamp");
            if (deMsgClient.equals(new String(ph2)))
             System.out.println("Order from Client is approved by Purchasing Department");
            else System.out.println("Order does not match Supervisor's");
@@ -159,6 +163,3 @@ public class PurchaseDept {
         s.readClient();
     }
 }
-
-//verify timestamp from client and supervisor
-//verify client message from client and supervisor

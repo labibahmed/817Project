@@ -65,7 +65,7 @@ public class Client {
         String quantity = scan.nextLine();
         System.out.println("Please enter at what price you would like to buy it at: ");
         String price = scan.nextLine();
-        return item + quantity + price;
+        return item +" "+ quantity + " $" + price;
     }
     public byte[] signature(String msg) throws Exception{
         Signature privateSignature = Signature.getInstance("SHA256withRSA");
@@ -104,6 +104,7 @@ public class Client {
     public void formOutput() throws Exception{
         Timestamp t = getTime();
         String msg = ID + "||" + t.getTime() + "||" +order();
+        System.out.println("The Order sent to Supervisor and Purchasing Department: "+ msg);
         String sig = Base64.getEncoder().encodeToString(signature(msg));
         byte[] SuperMsg = RSAencrypt(msg.getBytes(), PUSupervisor);
         byte[] PurMsg = RSAencrypt(msg.getBytes(),PUPurDept); 

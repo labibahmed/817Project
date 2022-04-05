@@ -92,7 +92,7 @@ public class Supervisor {
     
     public void readClient() throws IOException, Exception{
         msgFromClient = Cb.readLine();
-        System.out.println(msgFromClient);
+        System.out.println("Recieved from Client: " + msgFromClient);
         String[] enmsg_array;
         enmsg_array = msgFromClient.split("\\|\\|"); //split msg and client signature [0] [1]
         String clientMsg = enmsg_array[0];
@@ -100,14 +100,14 @@ public class Supervisor {
         byte[] enmsg = Base64.getDecoder().decode(clientMsg);             
         byte[] demsg = RSAdecrypt(enmsg,PRSupervisor);
         deMsgClient = new String (demsg);
-        System.out.println(deMsgClient);   
+        System.out.println("Client's order Decrypted: "+deMsgClient);   
         String[] deMsgArr = deMsgClient.split("\\|\\|");
         
        if(verifySig(deMsgClient,clientsig) && verifyTime(Long.parseLong(deMsgArr[1])) ){
-           System.out.println("Client is verified");
+           System.out.println("Verified the Client's Timestamp and Signature\nTherefore the Client's order request will be sent to the Purchasing Department");
            
        } else {
-           System.out.println("Client is not verified. Try again.");
+           System.out.println("Client Timestamp or Signature not verified");
        }
             
     }
@@ -134,6 +134,7 @@ public class Supervisor {
         byte[] PurMsg = RSAencrypt(msg.getBytes(),PUPurDept); 
         byte[] clientMes = RSAencrypt(deMsgClient.getBytes(),PUPurDept);
         
+        System.out.println("The message that will be sent to Purchasing Department : " + msg + "||" + deMsgClient);
         System.out.println("Sending to Purchasing Department: " + Base64.getEncoder().encodeToString(PurMsg)+ "||" + sig + "||" + Base64.getEncoder().encodeToString(clientMes));
         Pw.println(Base64.getEncoder().encodeToString(PurMsg)+ "||" + sig + "||"+ Base64.getEncoder().encodeToString(clientMes));
         Pw.flush();

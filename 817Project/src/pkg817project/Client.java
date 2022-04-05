@@ -30,7 +30,7 @@ public class Client {
     PrintWriter Sw, Pw;
     InputStreamReader Sr,Pr;
     BufferedReader Sb,Pb;
-    String ID = "Client";
+    String ID = "Client@gmail.com";
     Cipher RSA;
     
     

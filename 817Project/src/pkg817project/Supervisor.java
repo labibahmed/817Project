@@ -30,10 +30,12 @@ public class Supervisor {
     PrintWriter Cw, Pw;
     InputStreamReader Cr,Pr;
     BufferedReader Cb,Pb;
-    String ID = "Supervisor";
+    String ID = "Supervisor@gmail.com";
     Cipher RSA;
     String msgFromClient;
     String deMsgClient;
+    Timestamp time;
+    
     
     public Supervisor() throws Exception {
         s = new ServerSocket(4999); // server on port 4999
@@ -60,7 +62,13 @@ public class Supervisor {
     }
     
     
-    
+    public boolean verifyTime(long i){
+        if (time == null || time.getTime() < i) {
+            time = new Timestamp(i);
+            return true;
+        }
+        else return false;
+    }
     
     public byte[] RSAdecrypt(byte[] msg, PrivateKey p) throws Exception{
         RSA.init(Cipher.DECRYPT_MODE, p);
@@ -93,10 +101,11 @@ public class Supervisor {
         byte[] demsg = RSAdecrypt(enmsg,PRSupervisor);
         deMsgClient = new String (demsg);
         System.out.println(deMsgClient);   
+        String[] deMsgArr = deMsgClient.split("\\|\\|");
         
-        
-       if(verifySig(new String(demsg),clientsig) == true){
+       if(verifySig(deMsgClient,clientsig) && verifyTime(Long.parseLong(deMsgArr[1])) ){
            System.out.println("Client is verified");
+           
        } else {
            System.out.println("Client is not verified. Try again.");
        }

@@ -13,6 +13,7 @@ import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.Signature;
+import java.sql.Timestamp;
 import java.util.Base64;
 import javax.crypto.Cipher;
 
@@ -28,12 +29,13 @@ public class PurchaseDept {
     PrintWriter Cw, Sw;
     InputStreamReader Cr,Sr;
     BufferedReader Cb,Sb;
-    String ID = "PurchaseDept";
+    String ID = "PurchaseDept@gmail.com";
     Cipher RSA;
     String msgFromClient;
     String msgFromSupervisor;
     String deMsgClient;
     String deMsgSuper;
+    Timestamp time;
     
     public PurchaseDept() throws Exception {
         s = new ServerSocket(8000); // server on port 4999
@@ -55,6 +57,14 @@ public class PurchaseDept {
         KeyPair rsaKey = kg.generateKeyPair();
         PUPurDept = rsaKey.getPublic();
         PRPurDept = rsaKey.getPrivate();
+    }
+    
+    public boolean verifyTime(long i){
+        if (time == null || time.getTime() < i) {
+            time = new Timestamp(i);
+            return true;
+        }
+        else return false;
     }
     
     public void readClient() throws IOException, Exception{
@@ -82,22 +92,19 @@ public class PurchaseDept {
         byte[] placeholder = Base64.getDecoder().decode(superclient);  
         byte[] ph2 =RSAdecrypt(placeholder,PRPurDept);
         deMsgSuper = new String (demsg2);
+        String[] deMsgArrSuper =deMsgSuper.split("\\|\\|");
         System.out.println(deMsgSuper);  
         System.out.println(new String(ph2));
         
         
-       if(verifySigClient(deMsgClient,clientsig) == true){
-           System.out.println("Client is verified. The requested purchase is approved.");
+        
+       if(verifySigClient(deMsgClient,clientsig) && verifySigSuper(deMsgSuper,superSig) && verifyTime(Long.parseLong(deMsgArrSuper[1])) ){
+           if (deMsgClient.equals(new String(ph2)))
+            System.out.println("Order from Client is approved by Purchasing Department");
+           else System.out.println("Order does not match Supervisor's");
        } else {
-           System.out.println("Client is not verified. Try again.");
-       }
-       
-       if(verifySigSuper(deMsgSuper,superSig) == true){
-           System.out.println("Supervisor verified");
-       } else {
-           System.out.println("Super not verified");
-       }
-            
+           System.out.println("Order rejected");
+       }    
     }
     
     public byte[] RSAdecrypt(byte[] msg, PrivateKey p) throws Exception{

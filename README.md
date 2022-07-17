@@ -12,11 +12,11 @@ The main libraries used for this project are java IO, security, and crypto.
 ### Set Up
 All components share the keyExchange function which runs at the beginning of the project that distributes all the keys. This is done because the assumption is that all servers know each other's public keys beforehand. Each component stores the public keys and also creates a socket connection for the other two servers. For the actual communication Readers and Writers are set up so that the servers can communicate with each other. Each component also has its ID in the form of an email.
 
-<img src="clientMain.svg" width = "400">
+<img src="clientMain.svg" width = "700">
 
-<img src="superMain.svg" width = "400">
+<img src="superMain.svg" width = "700">
 
-<img src="purMain.svg" width = "400">
+<img src="purMain.svg" width = "700">
 
 
 ### Sequence
@@ -36,11 +36,11 @@ The project dealt with encryption for secure communication, we chose to use RSA 
 
 Encryption and Verification Sample
 
-![enc](enc.svg)
+<img src="enc.svg" width = "800">
 
 Replay Attack Prevention
 
-![time](time.svg)
+<img src="time.svg" width = "800">
 
 
 ### Sending + String and Byte Conversion

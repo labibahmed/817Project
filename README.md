@@ -12,9 +12,11 @@ The main libraries used for this project are java IO, security, and crypto.
 ### Set Up
 All components share the keyExchange function which runs at the beginning of the project that distributes all the keys. This is done because the assumption is that all servers know each other's public keys beforehand. Each component stores the public keys and also creates a socket connection for the other two servers. For the actual communication Readers and Writers are set up so that the servers can communicate with each other. Each component also has its ID in the form of an email.
 
-![clientMain](clientMain.svg)
-![superMain](superMain.svg)
-![purMain](purMain.svg)
+<img src="clientMain.svg" width = "400">
+
+<img src="superMain.svg" width = "400">
+
+<img src="purMain.svg" width = "400">
 
 
 ### Sequence

@@ -167,22 +167,3 @@ public class Supervisor {
         s.formOutput();
     }
 }
-
-//**** supervisor
-//read encrypted client message
-//decrypt client message
-//verify client sig
-//when verified, encrypt "superID || timestamp"
-//add super sig to superID || timestamp --> superID || timestamp || sig || --> encrypt
-//add all that to encrypted client message
-//send to purchasing department
-
-
-//***** purchasing department
-//reads encrypted client message
-//reads encrypted supervisor message
-//decrypt client message -- parse and isolate for client time and client sig
-//decrypt super message -- parse and isolate for client time and client sig
-//verify the client time and client sig are equal
-//verify the supervisor signature
-//when all are verified, send confirmation to super and client
